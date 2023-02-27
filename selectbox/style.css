@@ -1,0 +1,33 @@
+*, *:before, *:after {
+  box-sizing: border-box; 
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  color: #444;
+  background-color: hsl(0, 0%, 96%);
+}
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  text-align: center;
+  font-style: italic;
+}
+
+#mycanvas {
+  margin: 0 auto;
+  width: 30%;
+  display: block;
+}
+
+.selection {
+  text-align: center;
+  padding: 10px;
+}
+
+#selector {
+  display: inline-block;
+}
