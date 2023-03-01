@@ -1,0 +1,122 @@
+<!doctype html>
+ 
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    
+    <title>Forked: Forked: phina.js と html5の連携</title>
+    <meta name="description" content="${description}" />
+    <style>*, *:before, *:after {
+  box-sizing: border-box; 
+}
+html {
+  font-size: 62.5%;
+}
+body {
+  color: #444;
+  background-color: hsl(0, 0%, 96%);
+}
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  text-align: center;
+  font-style: italic;
+}
+
+#mycanvas {
+  margin: 0 auto;
+  width: 30%;
+  display: block;
+}
+
+.selection {
+  text-align: center;
+}
+
+#example {
+  display: inline-block;
+  padding: 10px;
+}</style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/gh/phi-jp/phina.js@v0.2.3/build/phina.js"></script>
+    <script>// グローバルに展開
+phina.globalize();
+/*
+ * メインシーン
+ */
+phina.define("MainScene", {
+  // 継承
+  superClass: 'DisplayScene',
+  // 初期化
+  init: function() {
+    // 親クラス初期化
+    this.superInit();
+    // 背景色
+    this.backgroundColor = 'black';
+
+    var self = this;
+    //
+    const fileInput = document.getElementById('example');
+    //
+    const handleFileSelect = () => {
+      // 選択されたファイル
+      const file = fileInput.files[0];
+      // FileReaderオブジェクトを作成
+      const reader = new FileReader();
+      // ファイルが読み込まれたときに実行
+      reader.onload = function (e) {
+        // 画像のURL
+        const imageUrl = e.target.result;
+        // img要素を作成
+        const image = document.createElement("img");
+        // 画像のURLをimg要素にセット
+        image.src = imageUrl; 
+        
+        image.onload = () => {
+          // img要素からスプライト作成
+          // 新規canvas作成
+          var canvas = phina.graphics.Canvas().setSize(image.width, image.height);
+          // canvasに描画
+          canvas.context.drawImage(image, 0, 0);
+          // スプライト作成
+          const sprite = Sprite(canvas).addChildTo(self);
+          sprite.setPosition(self.gridX.center(), self.gridY.center());
+        };
+      };
+      // ファイルを読み込む
+      reader.readAsDataURL(file);
+    };
+    //
+    fileInput.addEventListener('change', handleFileSelect);
+  },
+});
+/*
+ * メイン処理
+ */
+phina.main(function() {
+  // アプリケーションを生成
+  var app = GameApp({
+    // 表示先のcanvasを指定
+    query: '#mycanvas',
+    // MainScene から開始
+    startLabel: 'main',
+    // 画面にフィットさせない
+    fit: false,
+  });
+  // fps表示
+  //app.enableStats();
+  // 実行
+  app.run();
+});</script>
+    <canvas id="mycanvas"></canvas>
+    <div class="selection">
+    <input type="file" id="example" accept="image/*">
+    </div>
+    </body>
+</html>
+
